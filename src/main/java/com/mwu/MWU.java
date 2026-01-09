@@ -9,6 +9,7 @@ import com.mwu.setters.PublicDirSetter;
 import com.utils.hardware.CPU;
 //import com.utils.hardware.GPU;
 import com.utils.hardware.RAM;
+import com.utils.hardware.StorageCheck;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
 import java.io.IOException;
@@ -87,6 +88,7 @@ public class MWU {
     public void start() throws IOException {
 
         showUserSpecs();
+        StorageCheck.check();
 
         logger.log("Loading  settings...");
 

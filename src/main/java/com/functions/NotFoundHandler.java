@@ -5,22 +5,18 @@ import com.sun.net.httpserver.HttpExchange;
 import java.io.IOException;
 import java.io.OutputStream;
 
-/** Handles custom 404 pages */
 public class NotFoundHandler {
 
-    private String htmlPage; // optional static page content
+    private String htmlPage;
 
-    /** Constructor with HTML content */
     public NotFoundHandler(String htmlPage) {
         this.htmlPage = htmlPage;
     }
 
-    /** Default constructor (dynamic 404) */
     public NotFoundHandler() {
         this.htmlPage = null;
     }
 
-    /** Main method called by MWU */
     public void handle(HttpExchange exchange) throws IOException {
         exchange.getResponseHeaders().add("Content-Type", "text/html");
         byte[] bytes;

@@ -1,5 +1,5 @@
-### About
-MWU (Mainstream web utility) is a HTTP server framework for Java, written in Java. This project right now is just a hobby. I started this project in Decemeber and is still being worked on.
+# About
+MWU (Mainstream web utility) is a HTTP server framework for Java, written in Java. This project right now is just a hobby. I started this project in Decemeber and is still being worked on. If you don't stop the server or stop your codespace in github, your server will keep running. 
 
 ## Example Code
 
@@ -16,3 +16,5 @@ try {
 } catch (Exception e) {
     e.printStackTrace();
 }
+
+
