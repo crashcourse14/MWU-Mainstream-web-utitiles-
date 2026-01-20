@@ -16,6 +16,13 @@ public class Settings {
         return json.getBoolean("maintenance");
     }
 
+    public boolean isTrafficMonitoringEnabled() {
+        if (json.has("trafficMonitoring")) {
+            return json.getBoolean("trafficMonitoring");
+        }
+        return true; // Default to enabled
+    }
+
     public int getPort() {
         return json.getInt("port");
     }

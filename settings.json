@@ -1,6 +1,7 @@
 {
-  "maintenance": false,
+  "maintenance": true,
   "port": 8080,
-  "host": "localhost"
+  "host": "localhost",
+  "trafficMonitoring": true
 }
   

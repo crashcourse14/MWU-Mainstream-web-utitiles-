@@ -1,12 +1,15 @@
 package com.mwu;
 
 import com.mwu.logger.Logger;
-import com.functions.NotFoundHandler;
-import com.utils.Settings;
+import com.functions.StatsHandler;
+import com.utils.TrafficMonitor;
+import com.utils.TrafficMonitor.TrafficStats;
+import com.utils.hardware.CPU;
 import com.mwu.setters.HostSetter;
 import com.mwu.setters.PortSetter;
 import com.mwu.setters.PublicDirSetter;
-import com.utils.hardware.CPU;
+import com.functions.NotFoundHandler;
+import com.utils.Settings;
 //import com.utils.hardware.GPU;
 import com.utils.hardware.RAM;
 import com.utils.hardware.StorageCheck;
@@ -33,7 +36,8 @@ public class MWU {
 
     private Settings settings;
 
-    // Delegate setter classes
+    // Traffic monitoring
+    private TrafficMonitor trafficMonitor = new TrafficMonitor();
     private PortSetter portSetter = new PortSetter(this);
     private PublicDirSetter dirSetter = new PublicDirSetter(this);
     private HostSetter hostSetter = new HostSetter(this);
@@ -108,6 +112,7 @@ public class MWU {
         logger.log("Starting the server...");
         server = HttpServer.create(new InetSocketAddress(host, port), 0);
         server.createContext("/", this::handleRequest);
+        server.createContext("/stats", new StatsHandler(this));
         logger.info("Server running at " + host + ":" + port);
         server.start();
     }
@@ -127,7 +132,17 @@ public class MWU {
 
     /** Handle HTTP request */
     private void handleRequest(HttpExchange exchange) throws IOException {
+        long startTime = System.currentTimeMillis();
         String path = exchange.getRequestURI().getPath();
+        String clientIP = exchange.getRemoteAddress().getAddress().getHostAddress();
+        String method = exchange.getRequestMethod();
+        String userAgent = exchange.getRequestHeaders().getFirst("User-Agent");
+        if (userAgent == null) userAgent = "Unknown";
+
+        // Record the incoming request
+        if (settings != null && settings.isTrafficMonitoringEnabled()) {
+            trafficMonitor.recordRequest(path, clientIP, method, userAgent);
+        }
 
         // Maintenance mode override
         if (settings != null && settings.isMaintenance()) {
@@ -153,6 +168,11 @@ public class MWU {
                 os.write(bytes);
             }
 
+            long responseTime = System.currentTimeMillis() - startTime;
+            if (settings != null && settings.isTrafficMonitoringEnabled()) {
+                trafficMonitor.recordResponse(200, responseTime, bytes.length);
+            }
+
             logger.info("Served file: " + filePath);
             return; 
         }
@@ -165,22 +185,48 @@ public class MWU {
             try (OutputStream os = exchange.getResponseBody()) {
                 os.write(bytes);
             }
+
+            long responseTime = System.currentTimeMillis() - startTime;
+            if (settings != null && settings.isTrafficMonitoringEnabled()) {
+                trafficMonitor.recordResponse(404, responseTime, bytes.length);
+            }
+
             logger.warn("Served 404.html for missing file: " + path);
             return;
         }
         
         if (notFoundHandler != null) {
             notFoundHandler.handle(exchange);
+
+            long responseTime = System.currentTimeMillis() - startTime;
+            if (settings != null && settings.isTrafficMonitoringEnabled()) {
+                trafficMonitor.recordResponse(404, responseTime, 0); // Assume 0 bytes for custom handler
+            }
+
             logger.info("Executed custom NotFoundHandler for missing file: " + path);
             return;
         }
 
         exchange.sendResponseHeaders(404, -1);
+
+        long responseTime = System.currentTimeMillis() - startTime;
+        if (settings != null && settings.isTrafficMonitoringEnabled()) {
+            trafficMonitor.recordResponse(404, responseTime, 0);
+        }
+
         logger.warn("File not found and no 404 handler: " + filePath);
 
     }
 
 
+
+    public TrafficStats getTrafficStats() {
+        return trafficMonitor.getStats();
+    }
+
+    public TrafficMonitor getTrafficMonitor() {
+        return trafficMonitor;
+    }
 
     private String getExtension(String filename) {
         int i = filename.lastIndexOf('.');
