@@ -426,7 +426,7 @@ public class MWU {
         // Metrics endpoint
         get("/_metrics", (req, res) -> {
             if (config.isTrafficMonitoringEnabled()) {
-                res.json(trafficMonitor.getStats());
+                res.json(convertTrafficStats(trafficMonitor.getStats()));
             } else {
                 res.json(metricsCollector.getMetrics());
             }
@@ -505,6 +505,25 @@ public class MWU {
         response.header("Content-Type", contentType)
                 .header("Content-Length", String.valueOf(content.length))
                 .send(content);
+    }
+    
+    private Map<String, Object> convertTrafficStats(TrafficMonitor.TrafficStats stats) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("total_requests", stats.totalRequests);
+        result.put("unique_ips", stats.uniqueIPs);
+        result.put("active_connections", stats.activeConnections);
+        result.put("peak_connections", stats.peakConnections);
+        result.put("avg_response_time_ms", stats.avgResponseTime);
+        result.put("min_response_time_ms", stats.minResponseTime);
+        result.put("max_response_time_ms", stats.maxResponseTime);
+        result.put("median_response_time_ms", stats.medianResponseTime);
+        result.put("p95_response_time_ms", stats.p95ResponseTime);
+        result.put("total_bytes_sent", stats.totalBytesSent);
+        result.put("top_paths", stats.topPaths);
+        result.put("requests_by_method", stats.requestsByMethod);
+        result.put("status_codes", stats.requestsByStatusCode);
+        result.put("server_uptime", stats.startTime.toString());
+        return result;
     }
     
     private void loadSettings() {
