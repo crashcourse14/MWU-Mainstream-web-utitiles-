@@ -4,6 +4,7 @@ import com.mwu.MWU;
 import com.mwu.logger.Logger;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import com.utils.TrafficMonitor;
 import com.utils.TrafficMonitor.TrafficStats;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -49,7 +50,7 @@ public class StatsHandler implements HttpHandler {
             return;
         }
 
-        TrafficStats stats = mwu.getTrafficStats();
+        TrafficMonitor.TrafficStats stats = mwu.getTrafficStats();
         String html = generateStatsHtml(stats);
 
         byte[] responseBytes = html.getBytes("UTF-8");
