@@ -208,6 +208,27 @@ curl http://localhost:8080/_metrics
 curl http://localhost:8080/_info
 ```
 
+### Real-Time Stats Dashboard
+
+MWU includes a live statistics page at `/stats.html` that polls the server every few seconds and renders real-time traffic and performance data.
+
+- **Total requests**
+- **Unique IPs**
+- **Active and peak connections**
+- **Response time distribution**
+- **Top requested paths**
+- **Request methods breakdown**
+- **Response status code counts**
+- **Total bytes sent**
+
+To use it, make sure the `public/stats.html` file exists and then open:
+
+```bash
+http://localhost:8080/stats.html
+```
+
+The dashboard fetches from `/ _metrics` internally, so the endpoint must be accessible for live updates.
+
 ## ⚙️ Configuration
 
 ### Builder Pattern
