@@ -3,7 +3,7 @@ package com.mwu;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import com.utils.JSONObject;
+import com.mwu.util.JSONObject;
 import com.mwu.logger.Logger;
 
 public class SettingsLoader {

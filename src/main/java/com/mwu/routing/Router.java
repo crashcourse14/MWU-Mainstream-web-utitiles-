@@ -10,12 +10,10 @@ import java.util.regex.Pattern;
  */
 public class Router {
     private final Map<String, List<ServerRoute>> routes;
-    private final Map<String, WebSocketHandler> webSocketRoutes;
     private String prefix = "";
     
     public Router() {
         this.routes = new ConcurrentHashMap<>();
-        this.webSocketRoutes = new ConcurrentHashMap<>();
     }
     
     private Router(String prefix) {
@@ -32,11 +30,6 @@ public class Router {
         routes.computeIfAbsent(method, k -> new ArrayList<>()).add(route);
     }
     
-    public void addWebSocketRoute(String path, WebSocketHandler handler) {
-        String fullPath = prefix + path;
-        webSocketRoutes.put(fullPath, handler);
-    }
-    
     // ==================== Route Matching ====================
     
     public ServerRoute match(String method, String path) {
@@ -50,10 +43,6 @@ public class Router {
             }
         }
         return null;
-    }
-    
-    public WebSocketHandler matchWebSocket(String path) {
-        return webSocketRoutes.get(path);
     }
     
     // ==================== Route Groups ====================

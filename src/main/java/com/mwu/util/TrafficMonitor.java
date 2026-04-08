@@ -1,4 +1,4 @@
-package com.utils;
+package com.mwu.util;
 
 import com.mwu.logger.Logger;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-# MWU Framework 2.0 🚀
+# MWU Framework 🚀
 
 **MWU (Mainstream Web Utilities)** is a modern, lightweight HTTP server framework for Java that makes building web applications simple and elegant. Built with performance, security, and developer experience in mind.
 
@@ -14,9 +14,7 @@
 - **🔒 Built-in Security** - Security headers, rate limiting, and request validation
 - **📊 Monitoring & Metrics** - Real-time traffic monitoring and health checks
 - **🛠️ Maintenance Mode** - Graceful maintenance mode with custom HTML pages
-- **💻 Terminal Control** - Control server via terminal commands (stop, restart, status)
 - **📁 Static File Serving** - Automatic serving of static files with proper MIME types
-- **🔄 Auto-restart** - Scheduled server restarts for maintenance
 - **🎨 Custom Error Pages** - Beautiful 404.html and maintenance.html support
 
 ## 🏁 Quick Start
@@ -33,17 +31,28 @@ git clone https://github.com/crashcourse14/MWU-Mainstream-web-utitiles-.git
 cd MWU-Mainstream-web-utitiles-
 ```
 
-2. Compile the project:
+2. Compile the framework:
 ```bash
-javac -cp "src/main/java" src/main/java/com/server/ModernServer.java
+javac -cp "src/main/java" -d build src/main/java/com/mwu/*.java src/main/java/com/mwu/*/*.java
 ```
 
-3. Run the server:
+3. Run a hello world example:
 ```bash
-java -cp "src/main/java" com.server.ModernServer
+javac -cp "build:src/main/java" examples/hello-world/src/HelloWorld.java
+java -cp "build:examples/hello-world/src" examples.HelloWorld
 ```
 
-The server will start on `http://localhost:8080` with a beautiful landing page!
+The server will start on `http://localhost:8080`!
+
+## 📖 Examples
+
+Check out the `examples/` directory for complete working examples:
+
+- **[Hello World](examples/hello-world/)** - Basic server setup with routing
+- **[REST API](examples/rest-api/)** - Full CRUD API with middleware
+- **[Basic Server](examples/basic-server/)** - Comprehensive example with all features
+
+Each example includes a README with detailed instructions.
 
 ## 📖 Basic Usage
 
@@ -308,17 +317,22 @@ res.html("<html>");        // Send HTML response
 
 ### Running in Production
 
-1. Build the application:
+1. Build the framework:
 ```bash
-javac -cp "src/main/java" src/main/java/com/server/ModernServer.java
+javac -cp "src/main/java" -d build src/main/java/com/mwu/*.java src/main/java/com/mwu/*/*.java
 ```
 
-2. Run with production settings:
+2. Build your application:
 ```bash
-java -cp "src/main/java" \
+javac -cp "build:src/main/java" -d app examples/hello-world/src/HelloWorld.java
+```
+
+3. Run with production settings:
+```bash
+java -cp "build:app" \
   -Djava.awt.headless=true \
   -Xmx512m \
-  com.server.ModernServer
+  examples.HelloWorld
 ```
 
 ### Docker Support
@@ -329,9 +343,10 @@ Create a `Dockerfile`:
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 COPY . /app
-RUN javac -cp "src/main/java" src/main/java/com/server/ModernServer.java
+RUN javac -cp "src/main/java" -d build src/main/java/com/mwu/*.java src/main/java/com/mwu/*/*.java
+RUN javac -cp "build:src/main/java" examples/hello-world/src/HelloWorld.java
 EXPOSE 8080
-CMD ["java", "-cp", "src/main/java", "com.server.ModernServer"]
+CMD ["java", "-cp", "build:examples/hello-world/src", "examples.HelloWorld"]
 ```
 
 ## 🤝 Contributing
@@ -353,10 +368,12 @@ We welcome contributions! Here's how to get started:
 git clone https://github.com/crashcourse14/MWU-Mainstream-web-utitiles-.git
 cd MWU-Mainstream-web-utitiles-
 
-# Make changes to source files
-# Test your changes
-javac -cp "src/main/java" src/main/java/com/server/ModernServer.java
-java -cp "src/main/java" com.server.ModernServer
+# Build the framework
+javac -cp "src/main/java" -d build src/main/java/com/mwu/*.java src/main/java/com/mwu/*/*.java
+
+# Run an example
+javac -cp "build:src/main/java" examples/hello-world/src/HelloWorld.java
+java -cp "build:examples/hello-world/src" examples.HelloWorld
 ```
 
 ## 📄 License

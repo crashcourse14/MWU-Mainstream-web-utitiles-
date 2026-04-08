@@ -6,8 +6,8 @@ import com.mwu.routing.*;
 import com.mwu.config.MWUConfig;
 import com.mwu.maintenance.MaintenanceManager;
 import com.mwu.maintenance.MaintenanceMiddleware;
-import com.utils.TrafficMonitor;
-import com.utils.Settings;
+import com.mwu.util.TrafficMonitor;
+import com.mwu.util.Settings;
 import com.mwu.setters.PortSetter;
 import com.mwu.setters.HostSetter;
 import com.mwu.setters.PublicDirSetter;
@@ -28,8 +28,6 @@ import java.util.function.*;
  * - Fluent builder API
  * - Middleware pipeline
  * - Advanced routing with pattern matching
- * - WebSocket support
- * - Reactive request handling
  * - Built-in security features
  * - Comprehensive monitoring
  */
@@ -121,11 +119,6 @@ public class MWU {
             return this;
         }
         
-        public Builder enableCompression() {
-            mwu.use(new CompressionMiddleware());
-            return this;
-        }
-        
         public Builder rateLimit(int requestsPerMinute) {
             mwu.use(new RateLimitMiddleware(requestsPerMinute));
             return this;
@@ -200,18 +193,6 @@ public class MWU {
     
     public MWU staticFiles(String directory) {
         this.publicDirectory = directory;
-        return this;
-    }
-    
-    public MWU staticFiles(String mountPath, String directory) {
-        use(mountPath, new StaticFileMiddleware(directory));
-        return this;
-    }
-    
-    // ==================== WebSocket Support ====================
-    
-    public MWU websocket(String path, WebSocketHandler handler) {
-        router.addWebSocketRoute(path, handler);
         return this;
     }
     
